@@ -101,7 +101,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'app',
         'USER': 'root',
-        'PASSWORD': 'Sathi7661$',
+        'PASSWORD': 'rajasree123',
         'HOST': 'localhost',  # or your DB host
         'PORT': '3306',       # default MySQL port
         
@@ -133,7 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -173,6 +173,15 @@ AWS_SECRET_ACCESS_KEY = "DZRI******************************s/7zymU03ucPRmZd*****
 AWS_STORAGE_BUCKET_NAME = "code-with-sathya"
 AWS_S3_REGION_NAME = "ap-south-1"  # e.g. us-east-1
 AWS_QUERYSTRING_AUTH = False  # Optional: makes media URLs public
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+
+# URLs
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 

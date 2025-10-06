@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
+from django.utils import timezone  # Add this import at the top
 
 # Configure logger
 logger = logging.getLogger('backend')
@@ -34,6 +35,8 @@ class RegisterView(generics.CreateAPIView):
         }, status=status.HTTP_201_CREATED)
 
 
+
+
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
     permission_classes = [AllowAny]
@@ -45,11 +48,17 @@ class LoginView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token = get_tokens_for_user(user)
-        logger.info("User logged in successfully: id=%s, email=%s", user.id, user.email)
+
+        # ✅ Update last login timestamp
+        user.last_login = timezone.now()
+        user.save(update_fields=['last_login'])
+
+        logger.info("User logged in successfully: id=%s, email=%s, last_login=%s", user.id, user.email, user.last_login)
         return Response({
             "user": UserSerializer(user).data,
             "token": token
         }, status=status.HTTP_200_OK)
+
 
 
 class CustomTokenRefreshView(TokenRefreshView):

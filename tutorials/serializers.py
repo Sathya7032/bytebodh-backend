@@ -35,7 +35,12 @@ class TopicSerializer(serializers.ModelSerializer):
 class TopicTitleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
-        fields = ['id', 'title', 'slug']  # only ID & title
+        fields = ['id', 'title', 'slug', 'views', 'reactions']  # only ID & title
+
+    def get_reactions(self, obj):
+        likes = obj.reactions.filter(is_like=True).count()
+        dislikes = obj.reactions.filter(is_like=False).count()
+        return {'likes': likes, 'dislikes': dislikes}
 
 
 class TutorialSerializer(serializers.ModelSerializer):
@@ -60,7 +65,7 @@ class TutorialSerializer(serializers.ModelSerializer):
         return obj.topics.count() if obj.topics.exists() else 0
 
 class TutorialListSerializer(serializers.ModelSerializer):
-    topics = TopicTitleSerializer(many=True, read_only=True)
+    # topics = TopicTitleSerializer(many=True, read_only=True)
     total_topics = serializers.SerializerMethodField()
 
     class Meta:
@@ -71,7 +76,7 @@ class TutorialListSerializer(serializers.ModelSerializer):
             'description',
             'thumbnail',
             'total_topics',
-            'topics'
+            'slug'
         ]
 
     def get_total_topics(self, obj):
@@ -96,3 +101,12 @@ class TutorialDetailSerializer(serializers.ModelSerializer):
 
     def get_total_topics(self, obj):
         return obj.topics.count()
+
+class UserCommentSerializer(serializers.ModelSerializer):
+    topic_title = serializers.CharField(source='topic.title', read_only=True)
+    total_likes = serializers.IntegerField(read_only=True)
+    total_dislikes = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'topic_title', 'content', 'total_likes', 'total_dislikes', 'created_at']

@@ -2,10 +2,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import Tutorial, Topic, Comment, TopicReaction
-from .serializers import (
-    TutorialListSerializer, TutorialDetailSerializer,
-    TopicSerializer, CommentSerializer
-)
+from .serializers import *
 
 
 # ======================
@@ -30,7 +27,7 @@ class TutorialDetailView(generics.RetrieveAPIView):
 # ======================
 
 class TopicListView(generics.ListAPIView):
-    serializer_class = TopicSerializer
+    serializer_class = TopicTitleSerializer
     permission_classes = [permissions.IsAuthenticated]  # login required
 
     def get_queryset(self):
@@ -142,3 +139,11 @@ class TopicReactionView(generics.GenericAPIView):
             "likes": topic.reactions.filter(is_like=True).count(),
             "dislikes": topic.reactions.filter(is_like=False).count()
         })
+
+
+class MyCommentsView(generics.ListAPIView):
+    serializer_class = UserCommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Comment.objects.filter(user=self.request.user).order_by('-created_at')

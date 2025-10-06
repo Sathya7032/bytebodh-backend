@@ -3,7 +3,7 @@ from .views import (
     TutorialListView, TutorialDetailView,
     TopicListView, TopicDetailView,
     CommentListCreateView, CommentDetailView,
-    CommentReactionView, TopicReactionView
+    CommentReactionView, TopicReactionView, MyCommentsView
 )
 
 urlpatterns = [
@@ -15,4 +15,5 @@ urlpatterns = [
     path('comments/<int:pk>/', CommentDetailView.as_view(), name='comment-detail'),
     path('comments/<int:comment_id>/reaction/', CommentReactionView.as_view(), name='comment-reaction'),
     path('topics/<slug:topic_slug>/reaction/', TopicReactionView.as_view(), name='topic-reaction'),
+    path('my-comments/', MyCommentsView.as_view(), name='my-comments'),
 ]
