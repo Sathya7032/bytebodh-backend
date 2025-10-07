@@ -4453,3 +4453,7 @@ WARNING 2025-10-07 20:26:03,562 log 14156 19748 Not Found: /
 WARNING 2025-10-07 20:26:03,564 basehttp 14156 19748 "GET / HTTP/1.1" 404 4524
 WARNING 2025-10-07 20:26:03,763 log 14156 19748 Not Found: /favicon.ico
 WARNING 2025-10-07 20:26:03,765 basehttp 14156 19748 "GET /favicon.ico HTTP/1.1" 404 4575
+INFO 2025-10-07 20:55:00,038 autoreload 4032 2336 Watching for file changes with StatReloader
+INFO 2025-10-07 20:57:04,160 autoreload 3760 14644 Watching for file changes with StatReloader
+INFO 2025-10-07 21:05:36,763 autoreload 5188 5340 Watching for file changes with StatReloader
+INFO 2025-10-07 21:06:35,713 autoreload 3104 19880 Watching for file changes with StatReloader
