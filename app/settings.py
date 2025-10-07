@@ -12,19 +12,28 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)^q*yyl4*pn(s_cu0@sr701d$4y_t2ianuz6d2poq7sa7ibqn$'
+# # SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY = 'django-insecure-)^q*yyl4*pn(s_cu0@sr701d$4y_t2ianuz6d2poq7sa7ibqn$'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -96,15 +105,27 @@ WSGI_APPLICATION = 'app.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'app',
+#         'USER': 'root',
+#         'PASSWORD': 'Sathi7661$',
+#         'HOST': 'localhost',  # or your DB host
+#         'PORT': '3306',       # default MySQL port
+        
+#     }
+# }
+
+# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'app',
-        'USER': 'root',
-        'PASSWORD': 'rajasree123',
-        'HOST': 'localhost',  # or your DB host
-        'PORT': '3306',       # default MySQL port
-        
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT', '3306'),
     }
 }
 
@@ -167,11 +188,11 @@ SIMPLE_JWT = {
 }
 
 
-# AWS S3 Storage
-AWS_ACCESS_KEY_ID = "AKI************************AUSNM3EY***************************************T2NE6L4GQ"
-AWS_SECRET_ACCESS_KEY = "DZRI******************************s/7zymU03ucPRmZd************************TkJM/DA9IITaTtH8hxtt"
-AWS_STORAGE_BUCKET_NAME = "code-with-sathya"
-AWS_S3_REGION_NAME = "ap-south-1"  # e.g. us-east-1
+# AWS S3
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
 AWS_QUERYSTRING_AUTH = False  # Optional: makes media URLs public
 
 AWS_S3_FILE_OVERWRITE = False
@@ -183,7 +204,7 @@ AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
 
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'storages.custom_storage.CustomStorage'
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
@@ -217,13 +238,14 @@ customColorPalette = [
     ]
 
 CKEDITOR_5_CUSTOM_CSS = 'path_to.css' # optional
-CKEDITOR_5_FILE_STORAGE = "path_to_storage.CustomStorage" # optional
+CKEDITOR_5_FILE_STORAGE = "tutorials.custom_storage.CustomStorage" # optional
 CKEDITOR_5_CONFIGS = {
     'default': {
         'toolbar': {
             'items': ['heading', '|', 'bold', 'italic', 'link',
                       'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
-                    }
+                    },
+                    'imageUploadUrl': '/ckeditor/upload/',
 
     },
     'extends': {
@@ -255,6 +277,7 @@ CKEDITOR_5_CONFIGS = {
             ]
 
         },
+        'imageUploadUrl': '/ckeditor/upload/',
         'table': {
             'contentToolbar': [ 'tableColumn', 'tableRow', 'mergeTableCells',
             'tableProperties', 'tableCellProperties' ],
@@ -330,3 +353,17 @@ LOGGING = {
         },
     },
 }
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'bytebodh@gmail.com'
+# EMAIL_HOST_PASSWORD = 'otgvpdvpkbihjchs'
+
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')

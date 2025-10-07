@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Tutorial, Topic, Comment, TopicReaction
+from .models import Tutorial, Topic, Comment, TopicReaction, Problems
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
@@ -32,15 +32,23 @@ class TopicSerializer(serializers.ModelSerializer):
         dislikes = obj.reactions.filter(is_like=False).count()
         return {'likes': likes, 'dislikes': dislikes}
 
+
+
 class TopicTitleSerializer(serializers.ModelSerializer):
+    likes = serializers.SerializerMethodField()
+    dislikes = serializers.SerializerMethodField()
+
     class Meta:
         model = Topic
-        fields = ['id', 'title', 'slug', 'views', 'reactions']  # only ID & title
+        fields = ['id', 'title', 'slug', 'views', 'likes', 'dislikes']  # Replacing reactions with likes and dislikes
 
-    def get_reactions(self, obj):
-        likes = obj.reactions.filter(is_like=True).count()
-        dislikes = obj.reactions.filter(is_like=False).count()
-        return {'likes': likes, 'dislikes': dislikes}
+    def get_likes(self, obj):
+        # Count the number of likes (assuming `is_like=True` represents a like)
+        return obj.reactions.filter(is_like=True).count()
+
+    def get_dislikes(self, obj):
+        # Count the number of dislikes (assuming `is_like=False` represents a dislike)
+        return obj.reactions.filter(is_like=False).count()
 
 
 class TutorialSerializer(serializers.ModelSerializer):
@@ -76,7 +84,8 @@ class TutorialListSerializer(serializers.ModelSerializer):
             'description',
             'thumbnail',
             'total_topics',
-            'slug'
+            'slug',
+            'created_at',
         ]
 
     def get_total_topics(self, obj):
@@ -110,3 +119,45 @@ class UserCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'topic_title', 'content', 'total_likes', 'total_dislikes', 'created_at']
+
+class ProblemListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Problems
+        fields = ['title', 'slug']
+
+
+class ProblemDetailSerializer(serializers.ModelSerializer):
+    topic = serializers.StringRelatedField()  # Shows topic title instead of ID
+
+    class Meta:
+        model = Problems
+        fields = [
+            'id',
+            'topic',
+            'title',
+            'slug',
+            'question',
+            'code_snippet',
+            'explanation',
+            'video_url',
+            'created_at',
+            'updated_at'
+        ]
+
+#Problem Serializer start here
+
+class ProblemsSerializer(serializers.ModelSerializer):
+    topic_title = serializers.CharField(source='topic.title', read_only=True)
+    tutorial_title = serializers.CharField(source='topic.tutorial.title', read_only=True)
+
+    class Meta:
+        model = Problems
+        fields = [
+            'id',
+            'title',
+            'slug',
+            'topic_title',
+            'tutorial_title',
+            'created_at',
+            'updated_at'
+        ]

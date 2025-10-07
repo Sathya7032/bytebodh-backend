@@ -56,6 +56,36 @@ class Topic(models.Model):
     def __str__(self):
         return f"{self.tutorial.title} - {self.title}"
 
+class Problems(models.Model):
+    topic = models.ForeignKey(Topic, related_name='problems', on_delete=models.CASCADE)
+    title = models.CharField(max_length=255, blank=True, null=True)
+    question = models.TextField()
+    slug = models.SlugField(unique=True, blank=True)
+    
+    # New fields
+    code_snippet = models.TextField(blank=True, null=True, help_text="Add related code example here.")
+    explanation = CKEditor5Field('Explanation', config_name='extends', blank=True, null=True)
+    video_url = models.URLField(blank=True, null=True, help_text="Optional video explaining the code/problem.")
+    
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Problem in {self.topic.title}"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.title)
+            slug = base_slug
+            counter = 1
+            while Topic.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+
 
 class Comment(models.Model):
     topic = models.ForeignKey(Topic, related_name='comments', on_delete=models.CASCADE)

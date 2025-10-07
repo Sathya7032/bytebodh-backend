@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Tutorial, Topic, Comment, TopicReaction
-
+from .models import *
 
 # ======================
 # Tutorial Admin
@@ -91,6 +90,45 @@ class TopicReactionAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'topic__title')
     list_filter = ('is_like',)
     ordering = ('user',)
+
+from django.utils.safestring import mark_safe
+
+
+class ProblemsAdmin(admin.ModelAdmin):
+    list_display = ( 'topic','title', 'created_at', 'updated_at')
+    search_fields = ('question', 'code_snippet')
+    list_filter = ('created_at', 'updated_at')
+    prepopulated_fields = {'slug': ('title',)} 
+
+    # To make the code snippet more readable in the admin
+    def code_snippet_display(self, obj):
+        return mark_safe(f"<pre><code>{obj.code_snippet}</code></pre>" if obj.code_snippet else "No code")
+    code_snippet_display.short_description = 'Code Snippet'
+    
+    # Displaying the video URL in the admin panel
+    def video_embed(self, obj):
+        if obj.video_url:
+            return mark_safe(f'<a href="{obj.video_url}" target="_blank">Watch Video</a>')
+        return "No video"
+    video_embed.short_description = 'Video Link'
+    
+    # Fields to display in the form view
+    fieldsets = (
+        (None, {
+            'fields': ('topic','title','slug', 'question', 'code_snippet', 'explanation', 'video_url')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',),
+        }),
+    )
+
+    readonly_fields = ('created_at', 'updated_at')
+
+    # Optionally, you could add a rich text widget for the code snippet if needed
+    # You can also configure `CKEditor` here if you want to use it for the code snippet too
+
+admin.site.register(Problems, ProblemsAdmin)
 
 
 # ======================

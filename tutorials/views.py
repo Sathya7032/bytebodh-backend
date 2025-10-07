@@ -147,3 +147,27 @@ class MyCommentsView(generics.ListAPIView):
 
     def get_queryset(self):
         return Comment.objects.filter(user=self.request.user).order_by('-created_at')
+
+class ProblemListView(generics.ListAPIView):
+    """
+    List all problems under a given topic.
+    """
+    serializer_class = ProblemListSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        topic_slug = self.kwargs.get('topic_slug')
+        return Problems.objects.filter(topic__slug=topic_slug).order_by('-created_at')
+
+
+class ProblemDetailView(generics.RetrieveAPIView):
+    """
+    Retrieve details of a specific problem by slug.
+    """
+    queryset = Problems.objects.all()
+    serializer_class = ProblemDetailSerializer
+    lookup_field = 'slug'
+
+class ProblemsListAPIView(generics.ListAPIView):
+    queryset = Problems.objects.select_related('topic', 'topic__tutorial').all()
+    serializer_class = ProblemsSerializer
