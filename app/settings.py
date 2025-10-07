@@ -70,6 +70,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://byte-bodh-website.vercel.app",
 ]
 
 # Custom User Model
