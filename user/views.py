@@ -90,7 +90,7 @@ class LogoutView(APIView):
             token = RefreshToken(refresh_token)
             token.blacklist()
             logger.info("Logout successful: user_id=%s", user.id)
-            return Response({"detail": "Logout successful"}, status=status.HTTP_205_RESET_CONTENT)
+            return Response({"detail": "Logout successful"}, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error("Logout failed for user_id=%s: %s", user.id, str(e))
             return Response({"error": "Invalid token or already blacklisted"}, status=status.HTTP_400_BAD_REQUEST)
@@ -115,7 +115,7 @@ class PasswordResetView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         password = serializer.validated_data["password"]
         serializer.reset_password(uid, token, password)
-        return Response({"message": "Password reset successfully"}, status=status.HTTP_200_OK)
+        return Response( "Password reset successfully", status=status.HTTP_200_OK)
         
 
 class HealthCheckView(APIView):
@@ -136,6 +136,6 @@ class ChangePasswordView(APIView):
             new_password = serializer.validated_data['new_password']
             user.set_password(new_password)
             user.save()
-            return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
+            return Response("Password changed successfully.", status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

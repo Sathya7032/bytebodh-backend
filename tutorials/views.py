@@ -153,7 +153,7 @@ class ProblemListView(generics.ListAPIView):
     List all problems under a given topic.
     """
     serializer_class = ProblemListSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
         topic_slug = self.kwargs.get('topic_slug')
