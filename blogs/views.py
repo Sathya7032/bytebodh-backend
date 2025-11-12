@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Category, BlogPost
 from .serializers import CategorySerializer, BlogPostSerializer, ContactSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
@@ -34,14 +36,18 @@ class BlogPostDetailView(generics.RetrieveAPIView):
             'data': serializer.data
         }, status=status.HTTP_200_OK)
 
-
-class ContactCreateView(APIView):
-    def post(self, request):
-        serializer = ContactSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                {"message": "Thank you for contacting us! We’ll get back to you soon."},
-                status=status.HTTP_201_CREATED
-            )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['POST'])
+@permission_classes([AllowAny])  # Anyone can POST
+def contact_submit(request):
+    """
+    API endpoint to submit a contact form.
+    Publicly accessible without authentication or CSRF.
+    """
+    serializer = ContactSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(
+            {"message": "Thank you for contacting us! We’ll get back to you soon."},
+            status=status.HTTP_201_CREATED
+        )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

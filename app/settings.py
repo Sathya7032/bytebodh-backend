@@ -69,11 +69,20 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://byte-bodh-website.vercel.app",
-    "https://bytebodh.in"
+    "https://bytebodh.in",
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "https://byte-bodh-website.vercel.app",
+    "https://bytebodh.in",
+]
+
 
 # Custom User Model
 AUTH_USER_MODEL = 'user.User'
