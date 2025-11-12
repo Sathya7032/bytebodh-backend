@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Tag, BlogPost
+from .models import Category, Tag, BlogPost, Contact
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,3 +20,9 @@ class BlogPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlogPost
         fields = ['id', 'title', 'slug', 'excerpt', 'content', 'featured_image', 'category', 'tags', 'author', 'status', 'views', 'read_time', 'published_date', 'created_at', 'updated_at', 'is_featured']
+
+
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = '__all__'

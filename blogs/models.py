@@ -90,3 +90,31 @@ class BlogPost(models.Model):
     def increment_views(self):
         self.views += 1
         self.save(update_fields=['views'])
+
+
+class Contact(models.Model):
+    PROJECT_TYPE_CHOICES = [
+        ('website', 'Website Development'),
+        ('mobile', 'Mobile App'),
+        ('ecommerce', 'E-commerce Store'),
+        ('consultation', 'IT Consultation'),
+        ('other', 'Other'),
+    ]
+
+    BUDGET_CHOICES = [
+        ('5k-15k', '₹5,000 - ₹15,000'),
+        ('15k-30k', '₹15,000 - ₹30,000'),
+        ('30k-50k', '₹30,000 - ₹50,000'),
+        ('50k+', '₹50,000+'),
+    ]
+
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    budget = models.CharField(max_length=20, choices=BUDGET_CHOICES, blank=True, null=True)
+    project_type = models.CharField(max_length=30, choices=PROJECT_TYPE_CHOICES, blank=True, null=True)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.email}"

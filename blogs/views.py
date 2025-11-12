@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Category, BlogPost
-from .serializers import CategorySerializer, BlogPostSerializer
+from .serializers import CategorySerializer, BlogPostSerializer, ContactSerializer
 
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
@@ -33,3 +33,15 @@ class BlogPostDetailView(generics.RetrieveAPIView):
             'message': 'Blog post retrieved and view count incremented successfully.',
             'data': serializer.data
         }, status=status.HTTP_200_OK)
+
+
+class ContactCreateView(APIView):
+    def post(self, request):
+        serializer = ContactSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {"message": "Thank you for contacting us! We’ll get back to you soon."},
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
