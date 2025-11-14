@@ -2,8 +2,8 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Category, BlogPost
-from .serializers import CategorySerializer, BlogPostSerializer, ContactSerializer
+from .models import Category, BlogPost, JobNotification
+from .serializers import CategorySerializer, BlogPostSerializer, ContactSerializer, JobNotificationListSerializer, JobNotificationDetailSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
@@ -51,3 +51,20 @@ def contact_submit(request):
             status=status.HTTP_201_CREATED
         )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class JobNotificationListAPIView(generics.ListAPIView):
+    """
+    List all active job notifications.
+    """
+    queryset = JobNotification.objects.filter(is_active=True)
+    serializer_class = JobNotificationListSerializer
+    permission_classes = [AllowAny]
+
+class JobNotificationDetailAPIView(generics.RetrieveAPIView):
+    """
+    Retrieve detailed info about a single job notification.
+    """
+    queryset = JobNotification.objects.filter(is_active=True)
+    serializer_class = JobNotificationDetailSerializer
+    permission_classes = [AllowAny]
+    lookup_field = 'id'

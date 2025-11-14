@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Tag, BlogPost, Contact
+from .models import Category, Tag, BlogPost, Contact, JobNotification
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,3 +26,13 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = '__all__'
+
+class JobNotificationListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobNotification
+        fields = ['id', 'title', 'company', 'location', 'experience_level', 'posted_on', 'last_date']
+
+class JobNotificationDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobNotification
+        fields = '__all__'  # Show all details in detailed view

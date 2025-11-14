@@ -6,4 +6,6 @@ urlpatterns = [
     path('blog-posts/', views.BlogPostListView.as_view(), name='blog-list'),
     path('blog-posts/<slug:slug>/', views.BlogPostDetailView.as_view(), name='blog-detail'),
     path('contact/', views.contact_submit, name='contact-create'),
+    path('jobs/', views.JobNotificationListAPIView.as_view(), name='job-list'),
+    path('jobs/<int:id>/', views.JobNotificationDetailAPIView.as_view(), name='job-detail'),
 ]
